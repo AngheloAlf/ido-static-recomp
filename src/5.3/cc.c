@@ -118,17 +118,17 @@ void f_dotime(uint8_t *mem, uint32_t sp) {
     assert(retChildren != -1);
 
     double wallTimeDiff;
-    double userMiliseconds;
-    double systemMiliseconds;
+    double userMilliseconds;
+    double systemMilliseconds;
 
-#define GET_WALL_AS_MILIS(spec) (((spec)->tv_sec * 1000.0L) + ((spec)->tv_nsec / (1000.0L * 1000.0L)))
-    wallTimeDiff = GET_WALL_AS_MILIS(&wallTimeSpec) - GET_WALL_AS_MILIS(&sWallTimePrev);
+#define GET_WALL_AS_MILLIS(spec) (((spec)->tv_sec * 1000.0L) + ((spec)->tv_nsec / (1000.0L * 1000.0L)))
+    wallTimeDiff = GET_WALL_AS_MILLIS(&wallTimeSpec) - GET_WALL_AS_MILLIS(&sWallTimePrev);
 
 #define GET_UTIME(timevalptr) (((timevalptr)->tv_sec * 1000.0L * 1000.0L) + (timevalptr)->tv_usec)
 
-    userMiliseconds = ((GET_UTIME(&usageSelf.ru_utime) + GET_UTIME(&usageChildren.ru_utime)) - (GET_UTIME(&sRUsageSelfPrev.ru_utime) + GET_UTIME(&sRUsageChildrenPrev.ru_utime))) / 1000.0L;
-    systemMiliseconds = ((GET_UTIME(&usageSelf.ru_stime) + GET_UTIME(&usageChildren.ru_stime)) - (GET_UTIME(&sRUsageSelfPrev.ru_stime) + GET_UTIME(&sRUsageChildrenPrev.ru_stime))) / 1000.0L;
+    userMilliseconds = ((GET_UTIME(&usageSelf.ru_utime) + GET_UTIME(&usageChildren.ru_utime)) - (GET_UTIME(&sRUsageSelfPrev.ru_utime) + GET_UTIME(&sRUsageChildrenPrev.ru_utime))) / 1000.0L;
+    systemMilliseconds = ((GET_UTIME(&usageSelf.ru_stime) + GET_UTIME(&usageChildren.ru_stime)) - (GET_UTIME(&sRUsageSelfPrev.ru_stime) + GET_UTIME(&sRUsageChildrenPrev.ru_stime))) / 1000.0L;
 
-    fprintf(stderr, "%.2fu %.2fs %.2f %.0f%%\n", userMiliseconds, systemMiliseconds, wallTimeDiff, (((userMiliseconds + systemMiliseconds) / wallTimeDiff) * 100));
+    fprintf(stderr, "%.2fu %.2fs %.2f %.0f%%\n", userMilliseconds, systemMilliseconds, wallTimeDiff, (((userMilliseconds + systemMilliseconds) / wallTimeDiff) * 100));
 }
 #endif
