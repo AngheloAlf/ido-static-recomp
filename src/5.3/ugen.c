@@ -556,23 +556,25 @@ int __semputc(int, FILE_irix *);
 int __flsbuf(int, FILE *);
 
 
-#if 0
+#if 1
+//! not sure if it is equivalent
 //void func_4690a8(uint8_t *mem, uint32_t sp, FILE_irix* arg0, s8 arg1, s32 arg2) {
 void func_4690a8(uint8_t *mem, uint32_t sp, uint32_t fp_addr, s8 arg1, s32 arg2) {
     FILE_irix *f = (FILE_irix *)&MEM_U32(fp_addr);
 
-    s32 temp_a0;
+    //s32 temp_a0;
     s32 temp_t0;
-    s32 temp_t1;
-    s32 temp_t4;
+    //s32 temp_t1;
+    //s32 temp_t4;
     s32 temp_t9;
-    s32 temp_v1;
+    //s32 temp_v1;
     s32 var_s1;
     s32 var_v1;
     uint32_t temp_a0_2;
-    uint32_t temp_v1_2;
+    //uint32_t temp_v1_2;
     uint32_t var_v0;
-    uint32_t var_v0_2;
+
+    size_t i;
 
     var_s1 = arg2;
     if (f->_flag & 2) {
@@ -585,10 +587,12 @@ loop_3:
                 temp_t0 = var_v1 + var_s1;
                 f->_cnt = temp_t0;
                 if (temp_t0 > 0) {
+
                     var_v0 = f->_ptr_addr;
                     var_s1 -= temp_t0;
-                    temp_a0 = temp_t0 + (uintptr_t)var_v0;
-                    temp_t1 = (temp_a0 - (uintptr_t)var_v0) & 3;
+                    #if 0
+                    temp_a0 = temp_t0 + var_v0;
+                    temp_t1 = (temp_a0 - var_v0) & 3;
                     temp_v1 = temp_t1 + var_v0;
                     if (temp_t1 != 0) {
                         do {
@@ -619,7 +623,14 @@ loop_7:
                             MEM_U8(var_v0 - 1) = arg1;
                         } while (var_v0 != temp_a0);
                     }
-                    f->_ptr_addr = (uint32_t)var_v0;
+                    #endif
+                    for (i = 0; i < temp_t0; i++) {
+                        MEM_U8(var_v0) = arg1;
+                        var_v0++;
+                    }
+
+
+                    f->_ptr_addr = var_v0;
                 }
                 f->_cnt = -1;
                 //__flsbuf((s32) arg1, f);
@@ -636,39 +647,48 @@ loop_7:
                 }
             } else {
 block_11:
-                var_v0_2 = f->_ptr_addr;
-                temp_a0_2 = var_v0_2 + var_s1;
-                temp_t4 = (temp_a0_2 - var_v0_2) & 3;
-                temp_v1_2 = var_v0_2 + temp_t4;
+                var_v0 = f->_ptr_addr;
+                temp_a0_2 = var_v0 + var_s1;
+
+                #if 0
+                temp_t4 = (temp_a0_2 - var_v0) & 3;
+                temp_v1_2 = var_v0 + temp_t4;
                 if (temp_t4 != 0) {
                     do {
-                        var_v0_2 += 1;
-                        //var_v0_2->unk_-1 = arg1;
-                        //var_v0_2[-1] = arg1;
-                        MEM_U8(var_v0_2 - 1) = arg1;
-                    } while (temp_v1_2 != var_v0_2);
-                    if (var_v0_2 != temp_a0_2) {
+                        var_v0 += 1;
+                        //var_v0->unk_-1 = arg1;
+                        //var_v0[-1] = arg1;
+                        MEM_U8(var_v0 - 1) = arg1;
+                    } while (temp_v1_2 != var_v0);
+                    if (var_v0 != temp_a0_2) {
                         goto loop_14;
                     }
                 } else {
                     do {
 loop_14:
-                        var_v0_2 += 4;
-                        //var_v0_2->unk_-4 = arg1;
-                        //var_v0_2->unk_-3 = arg1;
-                        //var_v0_2->unk_-2 = arg1;
-                        //var_v0_2->unk_-1 = arg1;
-                        //var_v0_2[-4] = arg1;
-                        //var_v0_2[-3] = arg1;
-                        //var_v0_2[-2] = arg1;
-                        //var_v0_2[-1] = arg1;
-                        MEM_U8(var_v0_2 - 4) = arg1;
-                        MEM_U8(var_v0_2 - 3) = arg1;
-                        MEM_U8(var_v0_2 - 2) = arg1;
-                        MEM_U8(var_v0_2 - 1) = arg1;
-                    } while (var_v0_2 != temp_a0_2);
+                        var_v0 += 4;
+                        //var_v0->unk_-4 = arg1;
+                        //var_v0->unk_-3 = arg1;
+                        //var_v0->unk_-2 = arg1;
+                        //var_v0->unk_-1 = arg1;
+                        //var_v0[-4] = arg1;
+                        //var_v0[-3] = arg1;
+                        //var_v0[-2] = arg1;
+                        //var_v0[-1] = arg1;
+                        MEM_U8(var_v0 - 4) = arg1;
+                        MEM_U8(var_v0 - 3) = arg1;
+                        MEM_U8(var_v0 - 2) = arg1;
+                        MEM_U8(var_v0 - 1) = arg1;
+                    } while (var_v0 != temp_a0_2);
                 }
-                f->_ptr_addr = var_v0_2;
+                #endif
+
+                for (i = 0; i < temp_a0_2; i++) {
+                    MEM_U8(var_v0) = arg1;
+                    var_v0++;
+                }
+
+                f->_ptr_addr = var_v0;
             }
         }
     }
