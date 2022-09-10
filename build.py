@@ -124,8 +124,8 @@ def build_recompiler(in_dir):
     flags = "-Wno-switch"
 
     if platform.system() == "Darwin":
-        flags += " -std=c++11"
-    
+        flags += " -std=c++17"
+
     recomp = name_executable(in_dir, "recomp")
 
     print_step('C++','recomp.cpp',recomp)

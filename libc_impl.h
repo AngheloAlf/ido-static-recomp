@@ -9,6 +9,13 @@ union FloatReg {
     //double d;
 };
 
+struct tms_irix {
+    int32_t tms_utime;
+    int32_t tms_stime;
+    int32_t tms_cutime;
+    int32_t tms_cstime;
+};
+
 void mmap_initial_data_range(uint8_t *mem, uint32_t start, uint32_t end);
 void setup_libc_data(uint8_t *mem);
 

@@ -3,3 +3,8 @@ build5.3/
 build7.1/
 build/
 .vscode/
+
+qemu-irix
+
+ctx.c.m2c
+*.s

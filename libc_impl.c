@@ -1793,12 +1793,7 @@ uint32_t wrapper_strftime(uint8_t *mem, uint32_t ptr_addr, uint32_t maxsize, uin
 }
 
 int wrapper_times(uint8_t *mem, uint32_t buffer_addr) {
-    struct tms_irix {
-        int tms_utime;
-        int tms_stime;
-        int tms_cutime;
-        int tms_cstime;
-    } r;
+    struct tms_irix r;
     struct tms t;
     clock_t ret = times(&t);
     if (ret == (clock_t)-1) {

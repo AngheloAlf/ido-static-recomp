@@ -2314,7 +2314,21 @@ static void inspect_data_function_pointers(vector<pair<uint32_t, uint32_t>>& ret
 }
 
 static void dump_function_signature(Function& f, uint32_t vaddr) {
-    printf("static ");
+    // printf("static ");
+    std::string func_name;
+    auto name_it = symbol_names.find(vaddr);
+
+    if (name_it != symbol_names.end()) {
+        func_name = "f_" + name_it->second;
+    } else {
+        char buffer[std::size("func_") + 8 + 1];
+
+        snprintf(buffer, std::size(buffer), "func_%x", vaddr);
+        func_name = buffer;
+    }
+
+    printf("#pragma weak %s\n", func_name.c_str());
+
     switch (f.nret) {
         case 0:
             printf("void ");
@@ -2326,12 +2340,7 @@ static void dump_function_signature(Function& f, uint32_t vaddr) {
             printf("uint64_t ");
             break;
     }
-    auto name_it = symbol_names.find(vaddr);
-    if (name_it != symbol_names.end()) {
-        printf("f_%s", name_it->second.c_str());
-    } else {
-        printf("func_%x", vaddr);
-    }
+    printf("%s", func_name.c_str());
     printf("(uint8_t *mem, uint32_t sp");
     if (f.v0_in) {
         printf(", uint32_t %s", r(MIPS_REG_V0));
