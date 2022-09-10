@@ -106,7 +106,7 @@ $(call translated_src,$1): $(call irix_binary,$1) $(RECOMP) | $$$$(@D)/.
 	$(RECOMP) $(CONSERVATIVE_$1) $$< > $$@
 
 $(call recompiled_binary,$1): $(call translated_src,$1) $(COMPILE_DEPS) $2 | $$$$(@D)/.
-	$$(CC) $2 $$< -o $$@ -I. $(COMPILE_OPT) $(COMPILE_FLAGS)
+	$$(CC) $2 $$< $$(shell echo $$< | sed 's/build/src/') -o $$@ -I. $(COMPILE_OPT) $(COMPILE_FLAGS)
 endef
 
 # fn target_specific(ClangTarget, Artifact) -> Path
