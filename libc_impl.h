@@ -16,6 +16,24 @@ struct tms_irix {
     int32_t tms_cstime;
 };
 
+typedef struct __file_s {
+#if 0
+    int32_t _cnt;
+    uint8_t *_ptr;
+    uint8_t *_base;
+    uint8_t _flag;
+    uint8_t _o_file;
+    uint16_t _file;
+#endif
+    int _cnt;
+    uint32_t _ptr_addr;
+    uint32_t _base_addr;
+    uint8_t pad[2];
+    uint8_t _file;
+    uint8_t _flag;
+} FILE_irix;
+
+
 void mmap_initial_data_range(uint8_t *mem, uint32_t start, uint32_t end);
 void setup_libc_data(uint8_t *mem);
 
