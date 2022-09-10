@@ -559,8 +559,10 @@ int __flsbuf(int, FILE *);
 #if 1
 //! not sure if it is equivalent
 //void func_4690a8(uint8_t *mem, uint32_t sp, FILE_irix* arg0, s8 arg1, s32 arg2) {
-void func_4690a8(uint8_t *mem, uint32_t sp, uint32_t fp_addr, s8 arg1, s32 arg2) {
+void func_4690a8(uint8_t *mem, uint32_t sp, uint32_t fp_addr, uint32_t a1, uint32_t a2) {
     FILE_irix *f = (FILE_irix *)&MEM_U32(fp_addr);
+    s8 arg1 = a1;
+    s32 arg2 = a2;
 
     //s32 temp_a0;
     s32 temp_t0;
@@ -696,59 +698,59 @@ loop_14:
 #endif
 
 
-#if 0
+#if 1
 extern s32 D__0x7F60;
 
-void f_write_char(FILE_irix* arg0, s32 arg1, s32 arg2) {
-    s32 temp_s0;
-    s32 temp_t6;
-    s32 temp_t7;
-    s32 temp_t9;
+///void f_write_char(uint8_t *mem, uint32_t sp, FILE_irix* arg0, s32 arg1, s32 arg2) {
+void f_write_char(uint8_t *mem, uint32_t sp, uint32_t fp_addr, s32 arg1, s32 arg2) {
+    FILE_irix *f = (FILE_irix *)&MEM_U32(fp_addr);
+    u8 temp_s0 = arg1;
 
-    temp_s0 = arg1 & 0xFF;
     if (arg2 >= 2) {
-        func_4690a8((FILE_irix* )0x20, arg2 - 1, arg0);
-        if (D__0x7F60 != 0) {
-            __semputc(temp_s0, arg0);
+        func_4690a8(mem, sp, fp_addr, ' ', arg2 - 1);
+        if (/*D__0x7F60*/ MEM_U32(0xfb51f00 + 0) != 0) {
+            wrapper___semputc(mem,  temp_s0, fp_addr);
             return;
         }
-        temp_t9 = arg0->_cnt - 1;
-        arg0->_cnt = temp_t9;
-        if (temp_t9 < 0) {
-            __flsbuf(temp_s0, arg0);
+
+        f->_cnt--;
+        if (f->_cnt < 0) {
+            wrapper___flsbuf(mem, temp_s0, fp_addr);
             return;
         }
-        *arg0->_ptr = (u8) temp_s0;
-        arg0->_ptr += 1;
+        //*f->_ptr_addr = temp_s0;
+        MEM_U8(f->_ptr_addr) = temp_s0;
+        f->_ptr_addr += 1;
         return;
     }
     if (arg2 < -1) {
-        if (D__0x7F60 != 0) {
-            __semputc(temp_s0, arg0);
+        if (/*D__0x7F60*/ MEM_U32(0xfb51f00 + 0) != 0) {
+            wrapper___semputc(mem, temp_s0, fp_addr);
         } else {
-            temp_t7 = arg0->_cnt - 1;
-            arg0->_cnt = temp_t7;
-            if (temp_t7 < 0) {
-                __flsbuf(temp_s0, arg0);
+            f->_cnt--;
+            if (f->_cnt < 0) {
+                wrapper___flsbuf(mem, temp_s0, fp_addr);
             } else {
-                *arg0->_ptr = (u8) temp_s0;
-                arg0->_ptr += 1;
+                //*f->_ptr_addr = temp_s0;
+                MEM_U8(f->_ptr_addr) = temp_s0;
+                f->_ptr_addr += 1;
             }
         }
-        func_4690a8(arg0, 0x20, -1 - arg2, arg0);
+        func_4690a8(mem, sp, fp_addr, ' ', -1 - arg2);
         return;
     }
-    if (D__0x7F60 != 0) {
-        __semputc(temp_s0, arg0);
+    if (/*D__0x7F60*/ MEM_U32(0xfb51f00 + 0) != 0) {
+        wrapper___semputc(mem, temp_s0, fp_addr);
         return;
     }
-    temp_t6 = arg0->_cnt - 1;
-    arg0->_cnt = temp_t6;
-    if (temp_t6 < 0) {
-        __flsbuf(temp_s0, arg0);
+
+    f->_cnt--;
+    if (f->_cnt < 0) {
+        wrapper___flsbuf(mem, temp_s0, fp_addr);
         return;
     }
-    *arg0->_ptr = (u8) temp_s0;
-    arg0->_ptr += 1;
+    //*f->_ptr_addr = temp_s0;
+    MEM_U8(f->_ptr_addr) = temp_s0;
+    f->_ptr_addr += 1;
 }
 #endif
