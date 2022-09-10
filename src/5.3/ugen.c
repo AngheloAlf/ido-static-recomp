@@ -26,7 +26,7 @@ void f_put_string(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
 void f_write_instruction(uint8_t *mem, uint32_t sp, uint32_t a0);
 void f_print_source(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
 void f_write_directive(uint8_t *mem, uint32_t sp, uint32_t a0);
-void f_output_inst_ascii(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+// void f_output_inst_ascii(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
 void f_set_domtag(uint8_t *mem, uint32_t sp, uint32_t a0);
 uint32_t f_get_domtag(uint8_t *mem, uint32_t sp);
 uint32_t f_search_label(uint8_t *mem, uint32_t sp, uint32_t a0);
@@ -557,6 +557,79 @@ int __flsbuf(int, FILE *);
 
 
 #if 1
+// ? f_get(FILE_irix*, ?);                             /* extern */
+// ? f_reset(FILE_irix**, s32, ?, ?);                  /* extern */
+// ? f_write_directive(?);                             /* extern */
+// ? f_write_instruction(?);                           /* extern */
+
+// extern FILE_irix* D__0x75CC;
+#define D__0x75CC_addr 0x10018ef0
+#define D__0x75CC MEM_U32(D__0x75CC_addr)
+
+void f_output_inst_ascii(uint8_t *mem, uint32_t sp, s32 arg0, uint32_t arg1) {
+    uint32_t fp_addr = D__0x75CC_addr;
+    FILE_irix *f = (FILE_irix *)&MEM_U32(fp_addr);
+
+    f_reset(mem, sp, D__0x75CC_addr, arg0, 0x400, 0x10);
+
+    while (f_eof(mem, sp, D__0x75CC) == 0) {
+        #if 1
+        fprintf(stderr, "\n\n");
+        fprintf(stderr, "%s\n", __func__);
+        fprintf(stderr, "\n\n");
+        #endif
+
+        if ((MEM_U8(f->_ptr_addr + 5) & 0x3F) == 0x17) {
+            f_write_instruction(mem, sp, arg1);
+        } else {
+            f_write_directive(mem, sp, arg1);
+        }
+
+        f_get(mem, sp, D__0x75CC, 0x10);
+    }
+}
+#endif
+
+
+#if 1
+//extern ? D__0x7F84;
+
+// s32 f_eof(FILE_irix* arg0) {
+uint32_t f_eof(uint8_t *mem, uint32_t sp, uint32_t fp_addr) {
+    FILE_irix *f = (FILE_irix *)&MEM_U32(fp_addr);
+
+    s32 temp_t8;
+    s32 temp_v0;
+    s32 var_a0;
+    s32 var_v1;
+
+    var_v1 = f == NULL;
+    if (var_v1 == 0) {
+        var_v1 = (f->_flag & 2) != 0;
+        if (var_v1 == 0) {
+            temp_t8 = f->_cnt < 1;
+            var_v1 = temp_t8;
+            if (temp_t8 != 0) {
+                //temp_v0 = __filbuf(arg0);
+                temp_v0 = wrapper___filbuf(mem, fp_addr);
+                /**(&D__0x7F84 - 0x7230)*/ MEM_U32(0x10018dd0) = temp_v0;
+                if (temp_v0 == -1) {
+                    var_a0 = 1;
+                } else {
+                    //ungetc(temp_v0, arg0);
+                    wrapper_ungetc(mem, temp_v0, fp_addr);
+                    var_a0 = 0;
+                }
+                var_v1 = var_a0 != 0;
+            }
+        }
+    }
+    return var_v1;
+}
+#endif
+
+
+#if 1
 //! not sure if it is equivalent
 //void func_4690a8(uint8_t *mem, uint32_t sp, FILE_irix* arg0, s8 arg1, s32 arg2) {
 void func_4690a8(uint8_t *mem, uint32_t sp, uint32_t fp_addr, uint32_t a1, uint32_t a2) {
@@ -750,6 +823,9 @@ void f_write_char(uint8_t *mem, uint32_t sp, uint32_t fp_addr, s32 arg1, s32 arg
         return;
     }
     //*f->_ptr_addr = temp_s0;
+    fprintf(stderr, "\n");
+    fprintf(stderr, "%s: f->_ptr_addr = %X\n", __func__, f->_ptr_addr);
+    fprintf(stderr, "\n");
     MEM_U8(f->_ptr_addr) = temp_s0;
     f->_ptr_addr += 1;
 }
