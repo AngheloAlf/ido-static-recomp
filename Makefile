@@ -97,6 +97,9 @@ irix_binary = $(IRIX_USR_DIR)/$(if $(filter cc,$(1)),bin,lib)/$(1)
 # fn translated_src(ToolName) -> PathToOutputCFile
 translated_src = $(BUILD_DIR)/$(1).c
 
+# fn replacement_src(ToolName) -> PathToOutputCFile
+replacement_src = src/$(VERSION)/$(1).c
+
 # fn recompiled_binary(ToolName) -> PathToOutputBin
 recompiled_binary = $(BUILT_BIN)/$(1)
 
@@ -105,8 +108,8 @@ define recompile
 $(call translated_src,$1): $(call irix_binary,$1) $(RECOMP) | $$$$(@D)/.
 	$(RECOMP) $(CONSERVATIVE_$1) $$< > $$@
 
-$(call recompiled_binary,$1): $(call translated_src,$1) $(COMPILE_DEPS) $2 | $$$$(@D)/.
-	$$(CC) $2 $$< $$(shell echo $$< | sed 's/build/src/') -o $$@ -I. $(COMPILE_OPT) $(COMPILE_FLAGS)
+$(call recompiled_binary,$1): $(call translated_src,$1) $(call replacement_src,$1) $2 | $$$$(@D)/.
+	$$(CC) $$^ -o $$@ -I. $(COMPILE_OPT) $(COMPILE_FLAGS)
 endef
 
 # fn target_specific(ClangTarget, Artifact) -> Path
