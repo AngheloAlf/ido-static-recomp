@@ -113,15 +113,6 @@ struct timespec_t_irix {
     int tv_nsec;
 };
 
-struct FILE_irix {
-    int _cnt;
-    uint32_t _ptr_addr;
-    uint32_t _base_addr;
-    uint8_t pad[2];
-    uint8_t _file;
-    uint8_t _flag;
-};
-
 static struct {
     struct {
         uint64_t (*trampoline)(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t fp_dest);
@@ -647,6 +638,11 @@ int wrapper_printf(uint8_t *mem, uint32_t format_addr, uint32_t sp) {
 int wrapper_sprintf(uint8_t *mem, uint32_t str_addr, uint32_t format_addr, uint32_t sp) {
     STRING(format) // for debug
     char temp[32];
+    #if 0
+    fprintf(stderr, "\n");
+    fprintf(stderr, "%s: format=%s\n", __func__, format);
+    fprintf(stderr, "\n");
+    #endif
 
     if (!strcmp(format, "%.16e")) {
         union {
@@ -1340,12 +1336,24 @@ uint32_t wrapper_fopen(uint8_t *mem, uint32_t path_addr, uint32_t mode_addr) {
 
     STRING(path)
     STRING(mode)
+    #if 0
+    fprintf(stderr, "\n");
+    fprintf(stderr, "%s: path=%s\n", __func__, path);
+    fprintf(stderr, "%s: mode=%s\n", __func__, mode);
+    fprintf(stderr, "\n");
+    #endif
     return init_file(mem, -1, -1, path, mode);
 }
 
 uint32_t wrapper_freopen(uint8_t *mem, uint32_t path_addr, uint32_t mode_addr, uint32_t fp_addr) {
     STRING(path)
     STRING(mode)
+    #if 0
+    fprintf(stderr, "\n");
+    fprintf(stderr, "%s: path=%s\n", __func__, path);
+    fprintf(stderr, "%s: mode=%s\n", __func__, mode);
+    fprintf(stderr, "\n");
+    #endif
     struct FILE_irix *f = (struct FILE_irix *)&MEM_U32(fp_addr);
     wrapper_fclose(mem, fp_addr);
     return init_file(mem, -1, f - (struct FILE_irix *)&MEM_U32(IOB_ADDR), path, mode);

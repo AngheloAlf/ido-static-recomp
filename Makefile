@@ -1,4 +1,8 @@
 # --- Configuration
+
+# -- non-zero to use available C reimplementations
+USE_REIMPLEMENTATIONS ?= 1
+
 # -- select the version and binaries of IDO toolchain to recompile
 VERSION ?= 7.1
 ifeq ($(VERSION),7.1)
@@ -61,18 +65,18 @@ ERR_STRS_DST := $(BUILT_BIN)/err.english.cc
 
 # -- Settings for the static recompilation tool `recomp`
 RECOMP       := $(BUILD_BASE)/recomp
-RECOMP_OPT   ?= -O2
-RECOMP_FLAGS ?= -std=c++17 -Wno-switch `pkg-config --cflags --libs capstone`
+RECOMP_OPT   ?= -Og
+RECOMP_FLAGS ?= -g3 -std=c++17 -Wno-switch `pkg-config --cflags --libs capstone`
 
 # -- Settings for libc shim
 LIBC_IMPL := libc_impl.c
 LIBC_OBJ  := $(LIBC_IMPL:.c=.o)
-LIBC_OPT   ?= -O2
-LIBC_FLAGS ?= -fno-strict-aliasing -Wno-deprecated-declarations
+LIBC_OPT   ?= -O0
+LIBC_FLAGS ?= -g3 -fno-strict-aliasing -Wno-deprecated-declarations
 
 # -- Settings for recompiling the translated irix binaries
-COMPILE_OPT   ?= -O2
-COMPILE_FLAGS ?= -g -Wno-tautological-compare -fno-strict-aliasing -lm
+COMPILE_OPT   ?= -O0
+COMPILE_FLAGS ?= -g3 -Wno-tautological-compare -fno-strict-aliasing -lm
 COMPILE_DEPS  := header.h helpers.h $(ERR_STRS_DST)
 
 # -- Host specific configuration
@@ -83,10 +87,12 @@ ifeq ($(HOST_OS),macOS)
     COMPILE_FLAGS += -fno-pie
   endif
   endif
-  # macOS has deprecated some libc functions that the 1992 irix binaries use
-  LIBC_FLAGS += -Wno-deprecated-declarations
 else
   COMPILE_FLAGS += -no-pie
+endif
+
+ifneq ($(USE_REIMPLEMENTATIONS), 0)
+	COMPILE_FLAGS += -DUSE_REIMPLEMENTATIONS=1
 endif
 
 # --- Functions

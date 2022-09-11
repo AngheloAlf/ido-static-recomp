@@ -69,6 +69,7 @@ typedef int32_t s32;
 typedef uint32_t u32;
 typedef double f64;
 
+#ifdef USE_REIMPLEMENTATIONS
 #ifdef ORIGINAL_BEHAVIOUR
 // 0x10009c18
 struct tms D__0x7A28 = { 0 };
@@ -190,3 +191,4 @@ void f_dotime(uint8_t *mem, uint32_t sp) {
     fprintf(stderr, "%.2fu %.2fs %.2f %.0f%%\n", userMilliseconds, systemMilliseconds, wallTimeDiff, (((userMilliseconds + systemMilliseconds) / wallTimeDiff) * 100));
 }
 #endif
+#endif /* USE_REIMPLEMENTATIONS */

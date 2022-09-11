@@ -16,16 +16,15 @@ struct tms_irix {
     int32_t tms_cstime;
 };
 
-typedef struct __file_s {
+typedef struct FILE_irix {
 #if 0
-    int32_t _cnt;
-    uint8_t *_ptr;
-    uint8_t *_base;
-    uint8_t _flag;
-    uint8_t _o_file;
-    uint16_t _file;
+    int32_t _cnt;   /* number of available characters in buffer */
+    uint8_t *_ptr;  /* next character from/to here in buffer */
+    uint8_t *_base; /* the buffer */
+    uint8_t _flag;  /* the state of the stream */
+    uint8_t _file;  /* UNIX System file descriptor */
 #endif
-    int _cnt;
+    int32_t _cnt;
     uint32_t _ptr_addr;
     uint32_t _base_addr;
     uint8_t pad[2];

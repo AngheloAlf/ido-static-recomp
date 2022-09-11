@@ -525,7 +525,7 @@ uint32_t f_eoln(uint8_t *mem, uint32_t sp, uint32_t a0);
 uint32_t f_peek_char(uint8_t *mem, uint32_t sp, uint32_t a0);
 void f_next_char(uint8_t *mem, uint32_t sp, uint32_t a0);
 uint32_t f_calc_size(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
-//void f_reset(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
+void f_reset(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
 void func_468f18(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
 //void func_4690a8(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
 void f_writeln(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
@@ -553,6 +553,7 @@ void f_alloc_release(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
 uint32_t f_alloc_next_scb(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
 
 
+#ifdef USE_REIMPLEMENTATIONS
 int __semputc(int, FILE_irix *);
 int __flsbuf(int, FILE *);
 
@@ -574,7 +575,7 @@ void f_output_inst_ascii(uint8_t *mem, uint32_t sp, s32 arg0, uint32_t arg1) {
     f_reset(mem, sp, D__0x75CC_addr, arg0, 0x400, 0x10);
 
     while (f_eof(mem, sp, D__0x75CC) == 0) {
-        #if 1
+        #if 0
         fprintf(stderr, "\n\n");
         fprintf(stderr, "%s\n", __func__);
         fprintf(stderr, "\n\n");
@@ -636,7 +637,10 @@ uint32_t f_eof(uint8_t *mem, uint32_t sp, uint32_t fp_addr) {
 // extern ? D__0x7F74;
 // extern ? D__0x7F98;
 
-void f_reset(FILE_irix** arg0, void* arg1, u32 arg2, s32 arg3) {
+//void f_reset(FILE_irix** arg0, void* arg1, u32 arg2, s32 arg3) {
+void f_reset(uint8_t *mem, uint32_t sp, uint32_t fp_addr, uint32_t a1, uint32_t a2, uint32_t a3) {
+    FILE_irix *f = (FILE_irix *)&MEM_U32(fp_addr);
+
     s8* sp30;
     s32 sp2C;
     u32 sp28;
@@ -652,9 +656,11 @@ void f_reset(FILE_irix** arg0, void* arg1, u32 arg2, s32 arg3) {
     u32 var_a2;
     u32 var_v0;
 
-    var_a2 = arg2;
+    //var_a2 = arg2;
+    var_a2 = a2;
     sp2C = 0;
-    temp_s0 = arg0->unk_0;
+    //temp_s0 = arg0->unk_0;
+    temp_s0 = f;
     var_v0 = var_a2 - 1;
     if ((var_a2 != 0) && (*(var_v0 + arg1) == 0x20)) {
 loop_2:
@@ -699,7 +705,8 @@ block_10:
         if ((var_v0_2 != NULL) && (arg3 != 0)) {
             temp_a3 = f_calc_size(var_v0_2, arg3) + 8;
             if (var_v0_2 == &D__0x7F74) {
-                var_v0_2->_base = &D__0x7F54;
+                //var_v0_2->_base = &D__0x7F54;
+                MEM_U32(var_v0_2->_base_addr) = &D__0x7F54;
             } else {
                 sp28 = temp_a3;
                 temp_v0_2 = malloc(temp_a3);
@@ -719,7 +726,8 @@ block_10:
                 ungetc(temp_v0_3, var_v0_2);
             }
         }
-        arg0->unk_0 = var_v0_2;
+        //arg0->unk_0 = var_v0_2;
+        MEM_U32(fp_addr) = var_v0_2;
         if (sp2C != 0) {
             free(sp30);
         }
@@ -870,7 +878,7 @@ loop_14:
 
 
 #if 1
-extern s32 D__0x7F60;
+//extern s32 D__0x7F60;
 
 ///void f_write_char(uint8_t *mem, uint32_t sp, FILE_irix* arg0, s32 arg1, s32 arg2) {
 void f_write_char(uint8_t *mem, uint32_t sp, uint32_t fp_addr, s32 arg1, s32 arg2) {
@@ -921,10 +929,13 @@ void f_write_char(uint8_t *mem, uint32_t sp, uint32_t fp_addr, s32 arg1, s32 arg
         return;
     }
     //*f->_ptr_addr = temp_s0;
+    #if 0
     fprintf(stderr, "\n");
     fprintf(stderr, "%s: f->_ptr_addr = %X\n", __func__, f->_ptr_addr);
     fprintf(stderr, "\n");
+    #endif
     MEM_U8(f->_ptr_addr) = temp_s0;
     f->_ptr_addr += 1;
 }
 #endif
+#endif /* USE_REIMPLEMENTATIONS */
