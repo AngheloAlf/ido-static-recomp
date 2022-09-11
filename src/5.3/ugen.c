@@ -3,6 +3,7 @@
 #include "header.h"
 
 typedef int32_t s32;
+typedef uint32_t u32;
 typedef int8_t s8;
 typedef uint8_t u8;
 
@@ -524,7 +525,7 @@ uint32_t f_eoln(uint8_t *mem, uint32_t sp, uint32_t a0);
 uint32_t f_peek_char(uint8_t *mem, uint32_t sp, uint32_t a0);
 void f_next_char(uint8_t *mem, uint32_t sp, uint32_t a0);
 uint32_t f_calc_size(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
-void f_reset(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
+//void f_reset(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
 void func_468f18(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
 //void func_4690a8(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
 void f_writeln(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
@@ -628,6 +629,103 @@ uint32_t f_eof(uint8_t *mem, uint32_t sp, uint32_t fp_addr) {
 }
 #endif
 
+#if 0
+// s32 f_calc_size(FILE_irix*, s32);                   /* extern */
+// extern s32 D__0x73F0;
+// extern u8 D__0x7F54;
+// extern ? D__0x7F74;
+// extern ? D__0x7F98;
+
+void f_reset(FILE_irix** arg0, void* arg1, u32 arg2, s32 arg3) {
+    s8* sp30;
+    s32 sp2C;
+    u32 sp28;
+    s8* sp20;
+    FILE_irix* temp_s0;
+    FILE_irix* var_v0_2;
+    s32 temp_v0_3;
+    s32 var_a2_2;
+    s8* temp_t5;
+    s8* temp_v0;
+    s8* temp_v0_2;
+    u32 temp_a3;
+    u32 var_a2;
+    u32 var_v0;
+
+    var_a2 = arg2;
+    sp2C = 0;
+    temp_s0 = arg0->unk_0;
+    var_v0 = var_a2 - 1;
+    if ((var_a2 != 0) && (*(var_v0 + arg1) == 0x20)) {
+loop_2:
+        var_a2 = var_v0;
+        if (var_v0 != 0) {
+            var_v0 -= 1;
+            if (*(var_v0 + arg1) == 0x20) {
+                goto loop_2;
+            }
+        }
+    }
+    if (var_a2 != 0) {
+        arg2 = var_a2;
+        temp_v0 = malloc(var_a2 + 1);
+        sp30 = temp_v0;
+        memcpy(temp_v0, arg1, arg2);
+        sp30[arg2] = 0;
+        arg0->unk_4 = sp30;
+        sp2C = 1;
+        goto block_10;
+    }
+    temp_t5 = arg0->unk_4;
+    sp30 = temp_t5;
+    if (temp_t5 == NULL) {
+        if (temp_s0 != NULL) {
+            fseek(temp_s0, 0, 0);
+        } else {
+            sp30 = malloc(0x18U);
+            sp2C = 1;
+            D__0x73F0 += 1;
+            sprintf(sp30, &D__0x7F98 - 0xC70, D__0x73F0, getpid());
+            arg0->unk_4 = sp30;
+            goto block_10;
+        }
+    } else {
+block_10:
+        if (temp_s0 != NULL) {
+            var_v0_2 = freopen(sp30, &D__0x7F98 - 0xC60, temp_s0);
+        } else {
+            var_v0_2 = fopen(sp30, &D__0x7F98 - 0xC5C);
+        }
+        if ((var_v0_2 != NULL) && (arg3 != 0)) {
+            temp_a3 = f_calc_size(var_v0_2, arg3) + 8;
+            if (var_v0_2 == &D__0x7F74) {
+                var_v0_2->_base = &D__0x7F54;
+            } else {
+                sp28 = temp_a3;
+                temp_v0_2 = malloc(temp_a3);
+                if (temp_v0_2 != NULL) {
+                    var_a2_2 = 0;
+                } else {
+                    var_a2_2 = 4;
+                }
+                sp20 = temp_v0_2;
+                setvbuf(var_v0_2, temp_v0_2, var_a2_2, temp_a3);
+                if (temp_v0_2 != NULL) {
+                    var_v0_2->_flag |= 8;
+                }
+            }
+            temp_v0_3 = __filbuf(var_v0_2);
+            if (temp_v0_3 != -1) {
+                ungetc(temp_v0_3, var_v0_2);
+            }
+        }
+        arg0->unk_0 = var_v0_2;
+        if (sp2C != 0) {
+            free(sp30);
+        }
+    }
+}
+#endif
 
 #if 1
 //! not sure if it is equivalent

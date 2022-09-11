@@ -28,6 +28,19 @@ int __flsbuf(int,  FILE_irix *);
 int ungetc(int ch, FILE_irix* fp_addr);
 int __filbuf(FILE_irix* fp_addr);
 
+void* malloc(u32);
+void free(void*);
+
+FILE_irix* fopen(const char*, const char*);
+FILE_irix* freopen(const char*, const char*, FILE_irix*);
+s32 fseek(FILE_irix* fp_addr, s32 offset, s32 origin);
+
+void* memcpy(void* dst, void* src, u32 len);
+int sprintf(char *buffer, const char *format, ...);
+
+s32 getpid();
+s32 setvbuf(FILE_irix* stream, char * buffer, s32 mode, u32 size);
+
 /* libc */
 
 
