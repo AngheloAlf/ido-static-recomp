@@ -40,6 +40,7 @@ int sprintf(char *buffer, const char *format, ...);
 int fprintf(FILE_irix* stream, const char *format, ...);
 u32 strlen( const char *str );
 char *strcat( char *dest, const char *src );
+char *strrchr( const char *str, int ch );
 
 s32 getpid();
 s32 setvbuf(FILE_irix* stream, char * buffer, s32 mode, u32 size);

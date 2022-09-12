@@ -81,7 +81,75 @@ void f_parse_command(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
 
 void f_get_host_chiptype(uint8_t *mem, uint32_t sp);
 
+#if 0
 void f_error(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
+// extern s8* D__0x78D4;
+// extern s32 D__0x7BF0;
+// extern ? D__0x7F70;
+// extern ? D__0x7F74;
+// extern s32 D__0x7F78;
+// extern s32 D__0x7F7C;
+// extern ? D__0x7F98;
+// extern ? D__0x7FA8;
+
+void f_error(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s8* arg5, s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 argA, s32 argB) {
+    u32 sp34;
+    s32 sp30;
+    s32 temp_t3;
+    s32 temp_t3_2;
+
+    if ((D__0x7BF0 == 0) && (D__0x7F98.unk_440 == NULL)) {
+        D__0x7F98.unk_440 = strrchr(D__0x78D4, 0x2F);
+        if (D__0x7F98.unk_440 == NULL) {
+            D__0x7F98.unk_440 = (s8* ) D__0x78D4;
+        } else {
+            D__0x7F98.unk_440 = (s8* ) (D__0x7F98.unk_440 + 1);
+        }
+        sp34 = strlen(D__0x7F98.unk_440);
+        D__0x7F98.unk_444 = malloc(sp34 + 2);
+        if (D__0x7F98.unk_444 == NULL) {
+            fprintf(&D__0x7F70 + 0x20, &D__0x7FA8 + 0x5260, D__0x7F98.unk_440, 0x3281);
+            temp_t3 = D__0x7F7C;
+            if (temp_t3 < D__0x7F78) {
+                fprintf(&D__0x7F70 + 0x20, &D__0x7FA8 + 0x5288, D__0x7F98.unk_440, *((temp_t3 * 4) + &D__0x7F74));
+            }
+            exit(1);
+        }
+        sp30 = 0;
+        if ((s32) sp34 > 0) {
+            do {
+                *(D__0x7F98.unk_444 + sp30) = 0x20;
+                temp_t3_2 = sp30 + 1;
+                sp30 = temp_t3_2;
+            } while (temp_t3_2 < (s32) sp34);
+        }
+        *(D__0x7F98.unk_444 + sp30) = 0;
+    }
+    if (arg0 == 5) {
+        fprintf(&D__0x7F70 + 0x20, &D__0x7FA8 + 0x5290, D__0x7F98.unk_444);
+    } else {
+        fprintf(&D__0x7F70 + 0x20, &D__0x7FA8 + 0x5298, D__0x7F98.unk_440, *((arg0 * 4) + (&D__0x7F98 + 0x448)));
+    }
+    if (arg1 != 0) {
+        if (arg2 != 0) {
+            fprintf(&D__0x7F70 + 0x20, &D__0x7FA8 + 0x52A4, arg1, arg2);
+        } else {
+            fprintf(&D__0x7F70 + 0x20, &D__0x7FA8 + 0x52B4, arg1);
+        }
+    }
+    if (arg3 != 0) {
+        if (arg4 != 0) {
+            fprintf(&D__0x7F70 + 0x20, &D__0x7FA8 + 0x52BC, arg3, arg4);
+        } else {
+            fprintf(&D__0x7F70 + 0x20, &D__0x7FA8 + 0x52CC, arg3);
+        }
+    }
+    if (arg5 == NULL) {
+        arg5 = &D__0x7FA8 + 0x52D4;
+    }
+    fprintf(&D__0x7F70 + 0x20, arg5, arg6, arg7, arg8, arg9, argA, argB);
+}
+#endif
 
 void f_relocate_passes(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
 
