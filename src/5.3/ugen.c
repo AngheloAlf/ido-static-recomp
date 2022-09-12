@@ -990,76 +990,127 @@ void f_write_char(uint8_t *mem, uint32_t sp, uint32_t fp_addr, s32 arg1, s32 arg
 }
 #endif
 
-#if 0
+#if 1
 // ? f__getbuf(FILE_irix*, s32);                       /* extern */
 // extern s32 D__0x73F0;
 // extern ? D__0x7F74;
 // extern ? D__0x7F98;
 
-// void f_rewrite(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
-void f_rewrite(FILE_irix** arg0, void* arg1, u32 arg2, s32 arg3) {
-    FILE_irix* temp_s1;
-    FILE_irix* temp_v0_2;
-    FILE_irix* var_s1;
+//void f_rewrite(FILE_irix** arg0, void* arg1, u32 arg2, s32 arg3) {
+void f_rewrite(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3) {
+    // FILE_irix* temp_s1;
+    uint32_t temp_s1;
+    // FILE_irix* temp_v0_2;
+    uint32_t temp_v0_2;
+    // FILE_irix* var_s1;
+    uint32_t var_s1;
+
     s32 var_a1;
-    s8* temp_v0;
-    s8* var_s0;
+
+    // s8* temp_v0;
+    uint32_t temp_v0;
+
+    // s8* var_s0;
+    uint32_t var_s0;
+
     u32 var_a2;
     u32 var_v0;
 
-    var_a2 = arg2;
-    temp_s1 = arg0->unk_0;
+    //var_a2 = arg2;
+    var_a2 = a2;
+
+    // temp_s1 = arg0->unk_0;
+    temp_s1 = MEM_U32(a0 + 0);
+
     var_v0 = var_a2 - 1;
-    if ((var_a2 != 0) && (*(var_v0 + arg1) == 0x20)) {
+    if ((var_a2 != 0) && (/* *(var_v0 + arg1) */ MEM_U8(var_v0 + a1) == 0x20)) {
 loop_2:
         var_a2 = var_v0;
         if (var_v0 != 0) {
             var_v0 -= 1;
-            if (*(var_v0 + arg1) == 0x20) {
+            if (/* *(var_v0 + arg1) */ MEM_U8(var_v0 + a1) == 0x20) {
                 goto loop_2;
             }
         }
     }
     if (var_a2 != 0) {
-        arg2 = var_a2;
-        temp_v0 = malloc(var_a2 + 1);
+        //arg2 = var_a2;
+        a2 = var_a2;
+
+        //temp_v0 = malloc(var_a2 + 1);
+        temp_v0 = wrapper_malloc(mem, var_a2 + 1);
+
         var_s0 = temp_v0;
-        memcpy(temp_v0, arg1, arg2);
-        *(var_s0 + arg2) = 0;
-        arg0->unk_4 = var_s0;
+
+        // memcpy(temp_v0, arg1, arg2);
+        wrapper_memcpy(mem, temp_v0, a1, a2);
+
+        // *(var_s0 + arg2) = 0;
+        MEM_U8(var_s0 + a2) = 0;
+
+        //arg0->unk_4 = var_s0;
+        MEM_U32(a0 + 4) = var_s0;
         goto block_10;
     }
-    var_s0 = arg0->unk_4;
-    if (var_s0 == NULL) {
-        if (temp_s1 != NULL) {
-            fseek(temp_s1, 0, 0);
+
+    // var_s0 = arg0->unk_4;
+    var_s0 = MEM_U32(a0 + 4);
+    if (var_s0 == 0) { // NULL
+        if (temp_s1 != 0) { // NULL
+            //fseek(temp_s1, 0, 0);
+            wrapper_fseek(mem, temp_s1, 0, 0);
             return;
         }
-        var_s0 = malloc(0x18U);
+        //var_s0 = malloc(0x18U);
+        var_s0 = wrapper_malloc(mem, 0x18U);
+
         D__0x73F0 += 1;
-        sprintf(var_s0, &D__0x7F98 - 0xAA0, D__0x73F0, getpid());
-        arg0->unk_4 = var_s0;
+
+        // TODO
+        // sprintf(var_s0, &D__0x7F98 - 0xAA0, D__0x73F0, getpid());
+        assert(!"sprintf call on f_rewrite not implemented yet, shorry");
+
+        //arg0->unk_4 = var_s0;
+        MEM_U32(a0 + 4) = var_s0;
+
         goto block_10;
     }
+
 block_10:
-    if (temp_s1 != NULL) {
-        temp_v0_2 = freopen(var_s0, &D__0x7F98 - 0xA90, temp_s1);
+    if (temp_s1 != 0) { // NULL
+        // temp_v0_2 = freopen(var_s0, &D__0x7F98 - 0xA90, temp_s1);
+        temp_v0_2 = wrapper_freopen(mem, var_s0, 0x1000f570, temp_s1);
+
         var_s1 = temp_v0_2;
-        if (temp_v0_2 == NULL) {
-            fprintf(&D__0x7F74 + 0x20, &D__0x7F98 - 0xA8C);
+        if (temp_v0_2 == 0) { // NULL
+            // TODO
+            // fprintf(&D__0x7F74 + 0x20, &D__0x7F98 - 0xA8C);
+            assert(!"fprintf call on f_rewrite not implemented yet, shorry");
             exit(0xD);
         }
     } else {
-        var_s1 = fopen(var_s0, &D__0x7F98 - 0xA5C);
+        //var_s1 = fopen(var_s0, &D__0x7F98 - 0xA5C);
+        var_s1 = wrapper_fopen(mem, var_s0, 0x1000f5a4);
     }
-    if ((var_s1 != NULL) && (var_s1->_base == NULL)) {
-        var_a1 = 1;
-        if (arg3 != 0) {
-            var_a1 = arg3;
+
+    if (var_s1 != 0) { // NULL
+        FILE_irix *s1_file = (FILE_irix *)&MEM_U32(var_s1);
+
+        // if (var_s1->_base == 0) { // NULL
+        if (s1_file->_base_addr == 0) { // NULL
+            var_a1 = 1;
+            // if (arg3 != 0) {
+            //     var_a1 = arg3;
+            // }
+            if (a3 != 0) {
+                var_a1 = a3;
+            }
+            f__getbuf(mem, sp, var_s1, var_a1);
         }
-        f__getbuf(var_s1, var_a1);
     }
-    arg0->unk_0 = var_s1;
+
+    // arg0->unk_0 = var_s1;
+    MEM_U32(a0 + 0) = var_s1;
 }
 #endif
 

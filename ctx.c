@@ -37,9 +37,12 @@ s32 fseek(FILE_irix* fp_addr, s32 offset, s32 origin);
 
 void* memcpy(void* dst, void* src, u32 len);
 int sprintf(char *buffer, const char *format, ...);
+int fprintf(FILE_irix* stream, const char *format, ...);
 
 s32 getpid();
 s32 setvbuf(FILE_irix* stream, char * buffer, s32 mode, u32 size);
+
+void exit(s32);
 
 /* libc */
 
