@@ -44,8 +44,11 @@ s32 setvbuf(FILE_irix* stream, char * buffer, s32 mode, u32 size);
 
 void exit(s32);
 
+s32 isatty(s32 fd);
+
 /* libc */
 
+s32 f_calc_size(FILE_irix*, s32);
 
 void func_4690a8(FILE_irix*, s8, s32);
 

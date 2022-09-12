@@ -655,6 +655,7 @@ uint32_t f_eof(uint8_t *mem, uint32_t sp, uint32_t fp_addr) {
 #define D__0x7F54_addr 0xfb546b0
 // extern ? D__0x7F74;
 #define D__0x7F74_addr 0xfb528e4
+#define D__0x7F74 MEM_U32(D__0x7F74_addr)
 // extern ? D__0x7F98;
 
 //void f_reset(struct_0x75CC* arg0, u8* arg1, u32 arg2, s32 arg3) {
@@ -1111,6 +1112,37 @@ block_10:
 
     // arg0->unk_0 = var_s1;
     MEM_U32(a0 + 0) = var_s1;
+}
+#endif
+
+#if 1
+// extern ? D__0x7F74;
+
+// void f__getbuf(FILE_irix* arg0, s32 arg1) {
+void f__getbuf(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1) {
+    u32 sp24;
+    s32 var_a2;
+    FILE_irix *a0_file;
+
+    //sp24 = f_calc_size(arg0, arg1);
+    sp24 = f_calc_size(mem, sp, a0, a1);
+
+    var_a2 = 0;
+    //if (arg0 == (&D__0x7F74 + 0x10)) {
+    if (a0 == (D__0x7F74_addr + 0x10)) {
+        var_a2 = 0;
+        //if (isatty((s32) D__0x7F74.unk_1D) != 0) {
+        if (wrapper_isatty(mem, MEM_U8(D__0x7F74_addr + 0x1D)) != 0) {
+            var_a2 = 0x40;
+        }
+    }
+
+    //setvbuf(arg0, NULL, var_a2, (u32) sp24);
+    wrapper_setvbuf(mem, a0, 0, var_a2, sp24);
+
+    // arg0->_cnt = sp24;
+    a0_file = (FILE_irix *)&MEM_U32(a0);
+    a0_file->_cnt = sp24;
 }
 #endif
 
