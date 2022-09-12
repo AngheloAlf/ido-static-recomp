@@ -67,6 +67,7 @@ uint32_t f_gethostsex(uint8_t *mem, uint32_t sp);
 
 typedef int32_t s32;
 typedef uint32_t u32;
+typedef int8_t s8;
 typedef double f64;
 
 #ifdef USE_REIMPLEMENTATIONS
@@ -437,7 +438,16 @@ void func_436680(uint8_t *mem, uint32_t sp);
 
 void func_43673c(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
 
-uint32_t f_gethostsex(uint8_t *mem, uint32_t sp);
+#if 1
+//? f_gethostsex(void) {
+uint32_t f_gethostsex(uint8_t *mem, uint32_t sp) {
+    s32 sp4 = 1;
 
+    if ((s8) sp4 == 1) {
+        return 1;
+    }
+    return 0;
+}
+#endif
 
 #endif /* USE_REIMPLEMENTATIONS */
