@@ -527,9 +527,9 @@ void f_next_char(uint8_t *mem, uint32_t sp, uint32_t a0);
 uint32_t f_calc_size(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
 void f_reset(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
 void func_468f18(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
-//void func_4690a8(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
+void func_4690a8(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
 void f_writeln(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
-//void f_write_char(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
+void f_write_char(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
 void f_write_string(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
 void f_write_enum(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
 void f_write_integer(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
@@ -558,12 +558,6 @@ int __semputc(int, FILE_irix *);
 int __flsbuf(int, FILE *);
 
 
-#if 1
-// ? f_get(FILE_irix*, ?);                             /* extern */
-// ? f_reset(FILE_irix**, s32, ?, ?);                  /* extern */
-// ? f_write_directive(?);                             /* extern */
-// ? f_write_instruction(?);                           /* extern */
-
 typedef struct struct_0x75CC_unk_4 {
     uint8_t unk_0[0x400];
 } struct_0x75CC_unk_4;
@@ -576,6 +570,7 @@ typedef struct struct_0x75CC {
 #define D__0x75CC_addr 0x10018ef0
 #define D__0x75CC MEM_U32(D__0x75CC_addr)
 
+#if 1
 void f_output_inst_ascii(uint8_t *mem, uint32_t sp, s32 arg0, uint32_t arg1) {
     uint32_t fp_addr;
     FILE_irix *f;
@@ -647,8 +642,7 @@ uint32_t f_eof(uint8_t *mem, uint32_t sp, uint32_t fp_addr) {
 }
 #endif
 
-#if 1
-// s32 f_calc_size(FILE_irix*, s32);                   /* extern */
+
 // extern s32 D__0x73F0;
 #define D__0x73F0 MEM_U32(0x1001b290)
 // extern u8 D__0x7F54;
@@ -658,6 +652,7 @@ uint32_t f_eof(uint8_t *mem, uint32_t sp, uint32_t fp_addr) {
 #define D__0x7F74 MEM_U32(D__0x7F74_addr)
 // extern ? D__0x7F98;
 
+#if 1
 //void f_reset(struct_0x75CC* arg0, u8* arg1, u32 arg2, s32 arg3) {
 void f_reset(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3) {
     FILE_irix *f = (FILE_irix *)&MEM_U32(a0);
@@ -787,8 +782,7 @@ block_10:
 }
 #endif
 
-#if 1
-//! not sure if it is equivalent
+#ifdef NON_EQUIVALENT
 //void func_4690a8(uint8_t *mem, uint32_t sp, FILE_irix* arg0, s8 arg1, s32 arg2) {
 void func_4690a8(uint8_t *mem, uint32_t sp, uint32_t fp_addr, uint32_t a1, uint32_t a2) {
     FILE_irix *f = (FILE_irix *)&MEM_U32(fp_addr);
@@ -933,7 +927,7 @@ loop_14:
 //extern s32 D__0x7F60;
 
 ///void f_write_char(uint8_t *mem, uint32_t sp, FILE_irix* arg0, s32 arg1, s32 arg2) {
-void f_write_char(uint8_t *mem, uint32_t sp, uint32_t fp_addr, s32 arg1, s32 arg2) {
+void f_write_char(uint8_t *mem, uint32_t sp, uint32_t fp_addr, uint32_t arg1, uint32_t arg2) {
     FILE_irix *f = (FILE_irix *)&MEM_U32(fp_addr);
     u8 temp_s0 = arg1;
 
