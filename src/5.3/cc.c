@@ -70,6 +70,135 @@ typedef uint32_t u32;
 typedef double f64;
 
 #ifdef USE_REIMPLEMENTATIONS
+
+uint32_t f_main(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+void f_process_config(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+void f_add_info(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+void f_parse_command(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+void f_get_host_chiptype(uint8_t *mem, uint32_t sp);
+
+void f_error(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
+
+void f_relocate_passes(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
+
+void f_newrunlib(uint8_t *mem, uint32_t sp);
+
+void f_compose_G0_libs(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+#if 0
+uint32_t f_mkstr(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
+
+// ? f_error(?, ?, ?, void*, s32, void*, s32);         /* extern */
+// extern ? D__0x7F74;
+// extern s32 D__0x7F78;
+// extern s32 D__0x7F7C;
+// extern ? D__0x7FA8;
+
+s8* f_mkstr(s32 arg0, f64 arg1, ? arg2, ? arg3) {
+    f64 sp60;
+    f64 sp58;
+    void* sp48;
+    s32 temp_t1;
+    s32 temp_t3;
+    s32 temp_t7_2;
+    s32 temp_t8;
+    s32 temp_t9;
+    s8* temp_v0;
+    s8* var_s1;
+    s8* var_s1_2;
+    u32 temp_v0_2;
+    u32 var_s2;
+    void* temp_t5;
+    void* temp_t7;
+
+    temp_t7 = &arg0 - 1;
+    temp_t9 = (s32) (temp_t7 + 3) & ~3;
+    sp48 = temp_t7;
+    sp60 = arg0;
+    sp58 = arg1;
+    sp48 = temp_t9 + 4;
+    var_s1 = *temp_t9;
+    var_s2 = 1;
+    if (var_s1 != NULL) {
+        do {
+            temp_v0_2 = strlen(var_s1);
+            temp_t3 = (s32) (sp48 + 3) & ~3;
+            sp48 = temp_t3 + 4;
+            var_s1 = *temp_t3;
+            var_s2 += temp_v0_2;
+        } while (var_s1 != NULL);
+    }
+    temp_v0 = malloc(var_s2);
+    if (temp_v0 == NULL) {
+        f_error(1, 0, 0, &D__0x7FA8 + 0x5FE4, 0x3717, &D__0x7FA8 + 0x5FF0);
+        temp_t7_2 = D__0x7F7C;
+        if (temp_t7_2 < D__0x7F78) {
+            f_error(5, 0, 0, NULL, 0, &D__0x7FA8 + 0x6000, *((temp_t7_2 * 4) + &D__0x7F74));
+        }
+        exit(1);
+    }
+    temp_t5 = &arg0 - 1;
+    *temp_v0 = 0;
+    temp_t8 = (s32) (temp_t5 + 3) & ~3;
+    sp48 = temp_t5;
+    sp48 = temp_t8 + 4;
+    var_s1_2 = *temp_t8;
+    if (var_s1_2 != NULL) {
+        do {
+            strcat(temp_v0, var_s1_2);
+            temp_t1 = (s32) (sp48 + 3) & ~3;
+            sp48 = temp_t1 + 4;
+            var_s1_2 = *temp_t1;
+        } while (var_s1_2 != NULL);
+    }
+    return temp_v0;
+}
+#endif
+
+void f_mklist(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+void f_addstr(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+void f_addspacedstr(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+uint32_t f_newstr(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+uint32_t f_save_place(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+void f_set_place(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
+
+void f_addlist(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+void f_adduldlist(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
+
+uint32_t f_nodup(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+uint32_t f_getsuf(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+uint32_t f_mksuf(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+uint32_t f_savestr(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+void f_mktempstr(uint8_t *mem, uint32_t sp);
+
+uint32_t f_run(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
+
+uint32_t f_edit_src(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
+
+void f_get_lino(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2);
+
+void f_show_err(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+void f_handler(uint8_t *mem, uint32_t sp);
+
+void f_cleanup(uint8_t *mem, uint32_t sp);
+
+void f_whats(uint8_t *mem, uint32_t sp);
+
 #ifdef ORIGINAL_BEHAVIOUR
 // 0x10009c18
 struct tms D__0x7A28 = { 0 };
@@ -191,4 +320,56 @@ void f_dotime(uint8_t *mem, uint32_t sp) {
     fprintf(stderr, "%.2fu %.2fs %.2f %.0f%%\n", userMilliseconds, systemMilliseconds, wallTimeDiff, (((userMilliseconds + systemMilliseconds) / wallTimeDiff) * 100));
 }
 #endif
+
+uint32_t func_4339c8(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+uint32_t f_isdir(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+uint32_t f_regular_not_writeable(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+uint32_t f_regular_file(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+uint32_t f_basename(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+uint32_t f_dirname(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+uint32_t func_434094(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+void f_add_cxx_symbol_options(uint8_t *mem, uint32_t sp);
+
+void f_init_curr_dir(uint8_t *mem, uint32_t sp);
+
+uint32_t f_full_path(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+void f_add_static_opt(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+void f_record_static_fileset(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+uint32_t f_touch(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+void f_add_prelinker_objects(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+uint32_t f_quoted_length(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+uint32_t f_quote_shell_arg(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+void f_save_off_command_line(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+void f_skip_old_ii_controls(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+uint32_t f_make_ii_file_name(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+void f_update_instantiation_info_file(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+uint32_t func_4362cc(uint8_t *mem, uint32_t sp, uint32_t a0);
+
+void func_4365b8(uint8_t *mem, uint32_t sp);
+
+void func_436680(uint8_t *mem, uint32_t sp);
+
+void func_43673c(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1);
+
+uint32_t f_gethostsex(uint8_t *mem, uint32_t sp);
+
+
 #endif /* USE_REIMPLEMENTATIONS */
