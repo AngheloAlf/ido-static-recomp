@@ -185,7 +185,7 @@ static int g_file_max = 3;
 #if defined(__CYGWIN__) || (defined(__linux__) && defined(__aarch64__))
 #define RUNTIME_PAGESIZE
 /* ARM64 linux can have page sizes of 4kb, 16kb, or 64kb */
-/* Set in main before running the translated code */ 
+/* Set in main before running the translated code */
 static size_t g_Pagesize;
 
 #define TRUNC_PAGE(x) ((x) & ~(g_Pagesize - 1))
@@ -222,7 +222,7 @@ static void memory_allocate(uint8_t *mem, uint32_t start, uint32_t end)
 {
     assert(start >= MEM_REGION_START);
     assert(end <= MEM_REGION_START + MEM_REGION_SIZE);
-    // `start` will be passed to mmap, 
+    // `start` will be passed to mmap,
     // so it has to be host aligned in order to keep the guest's pages valid
     assert(start == TRUNC_PAGE(start));
 #ifdef __CYGWIN__
@@ -279,7 +279,10 @@ static void find_bin_dir(void) {
 #else
     ssize_t size = readlink("/proc/self/exe", path, PATH_MAX);
     if (size < 0 || size == PATH_MAX) {
-        return;
+        char *ido_cc = NULL;
+        if ((!(ido_cc = getenv("IDO_CC"))) || (snprintf(path, PATH_MAX, "%s", ido_cc) >= PATH_MAX)) {
+            return;
+        }
     }
 #endif
 
@@ -314,7 +317,7 @@ void mmap_initial_data_range(uint8_t *mem, uint32_t start, uint32_t end) {
     custom_libc_data_addr = end;
 #ifdef __APPLE__
     end += vm_page_size;
-#else 
+#else
     end += 4096;
 #endif /* __APPLE__ */
     memory_allocate(mem, start, end);
@@ -365,41 +368,6 @@ uint32_t wrapper_sbrk(uint8_t *mem, int increment) {
     cur_sbrk += alignedInc;
     return old;
 }
-
-#if 0
-uint32_t wrapper_malloc(uint8_t *mem, uint32_t size) {
-    uint32_t orig_size = size;
-    size += 8;
-    size = (size + 0xfff) & ~0xfff;
-    uint32_t ret = wrapper_sbrk(mem, size);
-    MEM_U32(ret) = orig_size;
-    return ret + 8;
-}
-
-uint32_t wrapper_calloc(uint8_t *mem, uint32_t num, uint32_t size) {
-    uint64_t new_size = (uint64_t)num * size;
-    assert(new_size == (uint32_t)new_size);
-    uint32_t ret = wrapper_malloc(mem, new_size);
-    return wrapper_memset(mem, ret, 0, new_size);
-}
-
-uint32_t wrapper_realloc(uint8_t *mem, uint32_t data_addr, uint32_t size) {
-    if (data_addr == 0) {
-        return wrapper_malloc(mem, size);
-    }
-    uint32_t orig_size = MEM_U32(data_addr - 8);
-    if (size < orig_size || orig_size < 4088 && size < 4088) {
-        MEM_U32(data_addr - 8) = size;
-        return data_addr;
-    }
-    uint32_t new_addr = wrapper_malloc(mem, size);
-    return wrapper_memcpy(mem, new_addr, data_addr, MIN(size, orig_size));
-}
-
-void wrapper_free(uint8_t *mem, uint32_t data_addr) {
-    // NOP
-}
-#else
 
 /*
 Simple bin-based malloc algorithm
@@ -531,7 +499,6 @@ void wrapper_free(uint8_t *mem, uint32_t data_addr) {
     MEM_U32(list_ptr) = node_ptr;
     mem_used -= size;
 }
-#endif
 
 int wrapper_fscanf(uint8_t *mem, uint32_t fp_addr, uint32_t format_addr, uint32_t sp) {
     struct FILE_irix *f = (struct FILE_irix *)&MEM_U32(fp_addr);
@@ -556,7 +523,6 @@ int wrapper_fscanf(uint8_t *mem, uint32_t fp_addr, uint32_t format_addr, uint32_
                     return ret;
                 }
                 if (!isspace(ch)) {
-                    //wrapper_ungetc(mem, ch, fp_addr);
                     break;
                 }
             }
@@ -771,8 +737,6 @@ int wrapper_sprintf(uint8_t *mem, uint32_t str_addr, uint32_t format_addr, uint3
     }
 
     MEM_S8(str_addr) = '\0';
-    STRING(orig_str) // for debug
-    //printf("result: '%s' '%s'\n", format, orig_str);
     return ret;
 }
 
@@ -780,25 +744,7 @@ int wrapper_fprintf(uint8_t *mem, uint32_t fp_addr, uint32_t format_addr, uint32
     struct FILE_irix *f = (struct FILE_irix *)&MEM_U32(fp_addr);
     STRING(format)
     sp += 8;
-    /*if (!strcmp(format, "%s")) {
-        uint32_t s_addr = MEM_U32(sp);
-        STRING(s)
-        if (fp_addr == STDERR_ADDR) {
-            fprintf(stderr, "%s", s);
-            fflush(stderr);
-            return 1;
-        }
-    }
-    if (!strcmp(format, "%s: %s: ")) {
-        uint32_t s1_addr = MEM_U32(sp), s2_addr = MEM_U32(sp + 4);
-        STRING(s1)
-        STRING(s2)
-        if (fp_addr == STDERR_ADDR) {
-            fprintf(stderr, "%s: %s: ", s1, s2);
-            fflush(stderr);
-            return 1;
-        }
-    }*/
+
     // Special-case this one format string. This seems to be the only one that uses `%f` or width specifiers.
     if (!strcmp(format, "%.2fu %.2fs %u:%04.1f %.0f%%\n") && fp_addr == STDERR_ADDR) {
         double arg0 = MEM_F64(sp + 0);
@@ -1795,7 +1741,6 @@ int wrapper_isatty(uint8_t *mem, int fd) {
 }
 
 uint32_t wrapper_strftime(uint8_t *mem, uint32_t ptr_addr, uint32_t maxsize, uint32_t format_addr, uint32_t timeptr_addr) {
-    //assert(0 && "strftime not implemented");
     MEM_S8(ptr_addr) = 0;
     return 0;
 }
@@ -1835,8 +1780,6 @@ uint32_t wrapper_ctime(uint8_t *mem, uint32_t timep_addr) {
         ++res;
     }
     return ret_addr;
-    //assert(0 && "ctime not implemented");
-    //return 0;
 }
 
 uint32_t wrapper_localtime(uint8_t *mem, uint32_t timep_addr) {
@@ -2366,7 +2309,6 @@ static void signal_handler(int signum) {
 }
 
 uint32_t wrapper_signal(uint8_t *mem, int signum, uint64_t (*trampoline)(uint8_t *mem, uint32_t sp, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t fp_dest), uint32_t handler_addr, uint32_t sp) {
-    //assert(0 && "signal not implemented");
     return 0;
 }
 
@@ -2401,12 +2343,10 @@ uint32_t wrapper_sigset(uint8_t *mem, int signum, uint64_t (*trampoline)(uint8_t
 }
 
 int wrapper_get_fpc_csr(uint8_t *mem) {
-    //assert(0 && "get_fpc_csr not implemented");
     return 0;
 }
 
 int wrapper_set_fpc_csr(uint8_t *mem, int csr) {
-    //assert(0 && "set_fpc_csr not implemented");
     return 0;
 }
 
@@ -2419,41 +2359,89 @@ void wrapper_longjmp(uint8_t *mem, uint32_t addr, int status) {
 }
 
 uint32_t wrapper_tempnam(uint8_t *mem, uint32_t dir_addr, uint32_t pfx_addr) {
-    STRING(dir)
-    STRING(pfx)
-    char *ret = tempnam(dir, pfx);
-    char *ret_saved = ret;
-    if (ret == NULL) {
+    char template[1024];
+    int fd;
+    size_t len;
+    uint32_t ret_addr;
+    const char *tmpdir;
+
+    tmpdir = getenv("TMPDIR");
+
+    if (tmpdir != NULL) {
+        strcpy(template, tmpdir);
+    } else if (dir_addr != 0) {
+        STRING(dir)
+
+        if (dir[0] != '\0') {
+            strcpy(template, dir);
+        } else {
+            strcpy(template, "/tmp");
+        }
+    } else {
+        strcpy(template, "/tmp");
+    }
+
+    strcat(template, "/");
+
+    if (pfx_addr != 0) {
+        STRING(pfx)
+
+        if (strlen(pfx) <= 5) {
+            strcat(template, pfx);
+        }
+    }
+
+    strcat(template, "_ido_tempnam_XXXXXX");
+
+    fd = mkstemp(template);
+    if (fd == -1) {
         MEM_U32(ERRNO_ADDR) = errno;
         return 0;
+    } else {
+        // close the file descriptor to mimic tempnam's behaviour
+        close(fd);
     }
-    size_t len = strlen(ret) + 1;
-    uint32_t ret_addr = wrapper_malloc(mem, len);
-    uint32_t pos = ret_addr;
-    while (len--) {
-        MEM_S8(pos) = *ret;
-        ++pos;
-        ++ret;
-    }
-    free(ret_saved);
+
+    len = strlen(template) + 1;
+    ret_addr = wrapper_malloc(mem, len);
+
+    strcpy1(mem, ret_addr, template);
     return ret_addr;
 }
 
 uint32_t wrapper_tmpnam(uint8_t *mem, uint32_t str_addr) {
-    char buf[1024];
+    char template[1024];
+    int fd;
+
     assert(str_addr != 0 && "s NULL not implemented for tmpnam");
-    char *ret = tmpnam(buf);
-    if (ret == NULL) {
+
+    strcpy(template, "/tmp/ido_tmpnam_XXXXXX");
+
+    fd = mkstemp(template);
+    if (fd == -1) {
         return 0;
     } else {
-        strcpy1(mem, str_addr, ret);
-        return str_addr;
+        // close the file descriptor to mimic tmpnam's behaviour
+        close(fd);
     }
+
+    strcpy1(mem, str_addr, template);
+    return str_addr;
 }
 
 uint32_t wrapper_mktemp(uint8_t *mem, uint32_t template_addr) {
+    int fd;
     STRING(template)
-    mktemp(template);
+
+    fd = mkstemp(template);
+    if (fd == -1) {
+        MEM_U32(ERRNO_ADDR) = errno;
+        template[0] = '\0';
+    } else {
+        // close the file descriptor to mimic mktemp's behaviour
+        close(fd);
+    }
+
     strcpy1(mem, template_addr, template);
     return template_addr;
 }
@@ -2607,13 +2595,10 @@ int wrapper_system(uint8_t *mem, uint32_t command_addr) {
 }
 
 static int name_compare(uint8_t *mem, uint32_t a_addr, uint32_t b_addr) {
-    //printf("pc=0x00438180\n");
     return wrapper_strcmp(mem, MEM_U32(a_addr), MEM_U32(b_addr));
 }
 
 static uint32_t tsearch_tfind(uint8_t *mem, uint32_t key_addr, uint32_t rootp_addr, uint32_t compar_addr, bool insert) {
-    //assert(compar_addr == 0x438180); // name_compare in as1
-
     if (rootp_addr == 0) {
         return 0;
     }

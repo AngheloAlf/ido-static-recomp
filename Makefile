@@ -72,7 +72,7 @@ RECOMP_FLAGS ?= -g3 -std=c++17 -Wno-switch `pkg-config --cflags --libs capstone`
 LIBC_IMPL := libc_impl.c
 LIBC_OBJ  := $(LIBC_IMPL:.c=.o)
 LIBC_OPT   ?= -O0
-LIBC_FLAGS ?= -g3 -fno-strict-aliasing -Wno-deprecated-declarations
+LIBC_FLAGS ?= -g3 -fno-strict-aliasing
 
 # -- Settings for recompiling the translated irix binaries
 COMPILE_OPT   ?= -O0
