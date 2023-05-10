@@ -647,6 +647,8 @@ void link_with_jalr(int offset) {
 
 // TODO: uniformise use of insn vs insns[i]
 void pass1(void) {
+    fprintf(stderr, "insns.size(): %i\n", insns.size());
+
     for (size_t i = 0; i < insns.size(); i++) {
         Insn& insn = insns[i];
 
@@ -696,7 +698,24 @@ void pass1(void) {
                 // something
                 // addu    t3,t3,gp
                 // jr      t3
+
+                // IDO 7.1 N32:
+                // switch ($t1)
+                // sltiu       $v1, $t1, 0xA
+                // sll         $t1, $t1, 2
+                // lui         $at, %hi(jtbl_1008D090)
+                // addiu       $at, $at, %lo(jtbl_1008D090)
+                // something
+                // addu        $t1, $t1, $at
+                // beqz        $v1, .L10008F98
+                //  something
+                // lw          $at, 0x0($t1)
+                // jr          $at
+
                 if (i >= 7 && rodata_section != NULL) {
+                    if (insns[i].instruction.isJrNotRa()) {
+                        fprintf(stderr, "adsf\n");
+                    }
                     bool is_pic =
                         (insns[i - 1].instruction.getUniqueId() == rabbitizer::InstrId::UniqueId::cpu_addu) &&
                         (insns[i - 1].instruction.GetO32_rt() == rabbitizer::Registers::Cpu::GprO32::GPR_O32_gp);
@@ -816,8 +835,10 @@ void pass1(void) {
                                 uint32_t target_addr =
                                     read_u32_be(rodata_section + (jtbl_addr - rodata_vaddr) + i * sizeof(uint32_t));
 
+                                fprintf(stderr, "target %08X\n", target_addr);
                                 target_addr += gp_value;
-                                // printf("%08X\n", target_addr);
+                                fprintf(stderr, "tg +gp %08X\n", target_addr);
+                                fprintf(stderr, "\n");
                                 label_addresses.insert(target_addr);
                             }
                         }
@@ -2957,6 +2978,11 @@ void inspect_data_function_pointers(vector<pair<uint32_t, uint32_t>>& ret, const
     for (uint32_t i = 0; i < len; i += 4) {
         uint32_t addr = read_u32_be(section + i);
 
+        // This breaks cfe and acpp
+        if (label_addresses.count(addr) != 0) {
+            continue;
+        }
+
         if (addr == 0x430b00 || addr == 0x433b00) {
             // in as1, not function pointers (normal integers)
             continue;
@@ -2978,7 +3004,8 @@ void inspect_data_function_pointers(vector<pair<uint32_t, uint32_t>>& ret, const
             fprintf(stderr, "assuming function pointer 0x%x at 0x%x\n", addr, section_vaddr + i);
 #endif
             ret.push_back(make_pair(section_vaddr + i, addr));
-            label_addresses.insert(addr);
+            //label_addresses.insert(addr);
+            add_function(addr);
             functions.at(addr).referenced_by_function_pointer = true;
         }
     }
@@ -3801,9 +3828,9 @@ int main(int argc, char* argv[]) {
 
     parse_elf(data, len);
     disassemble();
+    pass1();
     inspect_data_function_pointers(data_function_pointers, rodata_section, rodata_vaddr, rodata_section_len);
     inspect_data_function_pointers(data_function_pointers, data_section, data_vaddr, data_section_len);
-    pass1();
     pass2();
     pass3();
     pass4();

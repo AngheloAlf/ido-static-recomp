@@ -75,7 +75,7 @@ ifeq ($(RELEASE),1)
   OPTFLAGS     ?= -Os
   RAB_DEBUG    := 0
 else
-  OPTFLAGS     ?= -Og -g3
+  OPTFLAGS     ?= -O0 -g3
   STRIP := @:
   RAB_DEBUG    := 1
 endif
